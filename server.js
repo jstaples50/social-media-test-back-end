@@ -1,3 +1,8 @@
+const db = require("./config/connection");
+const User = require("./models/User");
+
+db.once("open", async () => {});
+
 // EXAMPLE SERVER FILE
 
 // const express = require('express');
