@@ -21,6 +21,7 @@
 // Create a virtual called reactionCount that retrieves the length of the thought's reactions array field on query.
 
 const { Schema, model } = require("mongoose");
+const reactionSchema = require("./Reaction");
 const moment = require("moment");
 
 const thoughtSchema = new Schema({
