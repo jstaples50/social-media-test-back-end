@@ -1,6 +1,9 @@
 TODOS
 
 - DELETE function for User returns no body for error or succesful create
-- format time function does not work when hitting api
+- formatDate function does not work when hitting api
+- BONUS: Remove a user's associated thoughts when deleted
 
 FORMATING
+
+- When a user is deleted, delete them from all users who are friends with deleted user

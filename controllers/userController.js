@@ -1,33 +1,4 @@
-// EXAMPLE USER CONTROLLER
-
-// const User = require('../models/User');
-
-// module.exports = {
-//   getUsers(req, res) {
-//     User.find()
-//       .then((users) => res.json(users))
-//       .catch((err) => res.status(500).json(err));
-//   },
-//   getSingleUser(req, res) {
-//     User.findOne({ _id: req.params.userId })
-//       .select('-__v')
-//       .populate('posts')
-//       .then((user) =>
-//         !user
-//           ? res.status(404).json({ message: 'No user with that ID' })
-//           : res.json(user)
-//       )
-//       .catch((err) => res.status(500).json(err));
-//   },
-//   // create a new user
-//   createUser(req, res) {
-//     User.create(req.body)
-//       .then((dbUserData) => res.json(dbUserData))
-//       .catch((err) => res.status(500).json(err));
-//   },
-// };
-
-const { User, Thought } = require("../models");
+const { User } = require("../models");
 
 // GET functions
 
@@ -36,7 +7,7 @@ const getAllUsers = async (req, res) => {
     const users = await User.find({});
     res.json(users);
     console.log(`${req.method} request made`);
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 };
@@ -53,19 +24,35 @@ const getUserById = async (req, res) => {
       res.json(user);
       console.log(`${req.method} request made`);
     }
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 };
 
-// POST function
+// POST functions
 
 const createUser = async (req, res) => {
   try {
     const newUser = await User.create(req.body);
     res.status(201).json(newUser);
     console.log(`${req.method} request made`);
-  } catch (error) {
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const addFriendToUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      res.status(404).json({ message: "No user found with that id" });
+    } else {
+      user.friends.push(req.params.friendId);
+      user.save();
+      res.json(user);
+      console.log(`${req.method} request made`);
+    }
+  } catch (err) {
     res.status(500).json(err);
   }
 };
@@ -85,12 +72,12 @@ const updateUser = async (req, res) => {
       res.json(updatedUser);
       console.log(`${req.method} request made`);
     }
-  } catch (error) {
+  } catch (err) {
     res.status(500).json(err);
   }
 };
 
-// DELETE function
+// DELETE functions
 
 const deleteUser = async (req, res) => {
   try {
@@ -101,7 +88,27 @@ const deleteUser = async (req, res) => {
       res.status(204).json({ message: "User successfully deleted" });
       console.log(`${req.method} request made`);
     }
-  } catch (error) {
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+const deleteFriendFromUserFriendList = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      res.status(404).json({ message: "No user found with that id" });
+    } else {
+      const friendToDelete = user.friends.find(
+        (friend) => friend === req.params.friendId
+      );
+      const indexOfFriendToDelete = user.friends.indexOf(friendToDelete);
+      user.friends.splice(indexOfFriendToDelete, 1);
+      user.save();
+      res.json(user);
+      console.log(`${req.method} request made`);
+    }
+  } catch (err) {
     res.status(500).json(err);
   }
 };
@@ -112,4 +119,6 @@ module.exports = {
   createUser,
   updateUser,
   deleteUser,
+  addFriendToUser,
+  deleteFriendFromUserFriendList,
 };
