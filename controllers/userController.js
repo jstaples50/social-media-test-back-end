@@ -29,13 +29,45 @@
 
 const { User, Thought } = require("../models");
 
+// GET functions
+
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.find({});
     res.json(users);
+    console.log(`${req.method} request made`);
   } catch (error) {
     res.status(500).json(err);
   }
 };
 
-module.exports = { getAllUsers };
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.userId }).populate([
+      "thoughts",
+      "friends",
+    ]);
+    if (!user) {
+      res.status(404).json({ message: "No user found with that id" });
+    } else {
+      res.json(user);
+      console.log(`${req.method} request made`);
+    }
+  } catch (error) {
+    res.status(500).json(err);
+  }
+};
+
+// POST function
+
+const createUser = async (req, res) => {
+  try {
+    const newUser = await User.create(req.body);
+    res.status(201).json(newUser);
+    console.log(`${req.method} request made`);
+  } catch (error) {
+    res.status(500).json(err);
+  }
+};
+
+module.exports = { getAllUsers, getUserById, createUser };
