@@ -43,13 +43,15 @@ const thoughtSchema = new Schema({
   reactions: [reactionSchema],
 });
 
-const formatDate = (date) => {
-  return moment(date).format("LLL");
-};
-
 thoughtSchema.virtual("reactionCount").get(function () {
   return this.reactions.length;
 });
+
+function formatDate(date) {
+  if (date) {
+    return moment(date).format("LLL");
+  }
+}
 
 const Thought = model("Thought", thoughtSchema);
 

@@ -21,7 +21,7 @@
 // Schema Settings:
 // This will not be a model, but rather will be used as the reaction field's subdocument schema in the Thought model.
 
-const { Schema, model } = require("mongoose");
+const { Schema } = require("mongoose");
 const mongoose = require("mongoose");
 const moment = require("moment");
 
@@ -46,8 +46,8 @@ const reactionSchema = new Schema({
   },
 });
 
-const formatDate = (date) => {
+function formatDate(date) {
   return moment(date).format("LLL");
-};
+}
 
 module.exports = reactionSchema;
