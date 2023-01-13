@@ -70,4 +70,24 @@ const createUser = async (req, res) => {
   }
 };
 
-module.exports = { getAllUsers, getUserById, createUser };
+// PUT function
+
+const updateUser = async (req, res) => {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: req.params.userId },
+      { $set: req.body },
+      { runValidators: true, new: true }
+    );
+    if (!updatedUser) {
+      res.status(404).json({ message: "No user found with that id" });
+    } else {
+      res.json(updatedUser);
+      console.log(`${req.method} request made`);
+    }
+  } catch (error) {
+    res.status(500).json(err);
+  }
+};
+
+module.exports = { getAllUsers, getUserById, createUser, updateUser };

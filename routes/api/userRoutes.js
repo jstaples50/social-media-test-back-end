@@ -20,9 +20,10 @@ const {
   getAllUsers,
   getUserById,
   createUser,
+  updateUser,
 } = require("../../controllers/userController");
 
 router.route("/").get(getAllUsers).post(createUser);
-router.route("/:userId").get(getUserById);
+router.route("/:userId").get(getUserById).put(updateUser);
 
 module.exports = router;
