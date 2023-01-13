@@ -1,0 +1,6 @@
+TODOS
+
+- DELETE function for User returns no body for error or succesful create
+- format time function does not work when hitting api
+
+FORMATING
