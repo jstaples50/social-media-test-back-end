@@ -43,13 +43,15 @@ const createUser = async (req, res) => {
 
 const addFriendToUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { new: true }
+    );
     if (!user) {
       res.status(404).json({ message: "No user found with that id" });
     } else {
-      user.friends.push(req.params.friendId);
-      user.save();
-      res.json(user);
+      res.status(203).json(user);
       console.log(`${req.method} request made`);
     }
   } catch (err) {
