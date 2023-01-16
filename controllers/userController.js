@@ -87,7 +87,7 @@ const deleteUser = async (req, res) => {
     if (!userToDelete) {
       res.status(404).json({ message: "No user found with that id" });
     } else {
-      res.status(204).json({ message: "User successfully deleted" });
+      res.status(202).json({ message: "User successfully deleted" });
       console.log(`${req.method} request made`);
     }
   } catch (err) {
@@ -95,21 +95,38 @@ const deleteUser = async (req, res) => {
   }
 };
 
+// const deleteFriendFromUserFriendList = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.params.userId);
+//     if (!user) {
+//       res.status(404).json({ message: "No user found with that id" });
+//     } else {
+//       const friendToDelete = user.friends.find(
+//         (friend) => friend === req.params.friendId
+//       );
+//       const indexOfFriendToDelete = user.friends.indexOf(friendToDelete);
+//       user.friends.splice(indexOfFriendToDelete, 1);
+//       user.save();
+//       res.json(user);
+//       console.log(`${req.method} request made`);
+//     }
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// };
+
 const deleteFriendFromUserFriendList = async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
-    if (!user) {
-      res.status(404).json({ message: "No user found with that id" });
-    } else {
-      const friendToDelete = user.friends.find(
-        (friend) => friend === req.params.friendId
-      );
-      const indexOfFriendToDelete = user.friends.indexOf(friendToDelete);
-      user.friends.splice(indexOfFriendToDelete, 1);
-      user.save();
-      res.json(user);
-      console.log(`${req.method} request made`);
-    }
+    const user = await User.findOneAndUpdate(
+      { _id: req.params.userId },
+      {
+        $pull: { friends: req.params.friendId },
+      }
+    );
+    !user
+      ? res.status(404).json({ message: "No friend found with that id" })
+      : res.json({ message: "Friend deleted from friend's list" });
+    console.log(`${req.method} request made`);
   } catch (err) {
     res.status(500).json(err);
   }

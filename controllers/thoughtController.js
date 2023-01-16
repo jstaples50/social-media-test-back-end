@@ -89,10 +89,51 @@ const deleteThought = async (req, res) => {
   }
 };
 
+// ADD a reaction to a thought
+
+const addReaction = async (req, res) => {
+  try {
+    const thoughtToAddReaction = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      { $addToSet: { reactions: req.body } },
+      { runValidators: true, new: true }
+    );
+    !thoughtToAddReaction
+      ? res.status(404).json({ message: "No thought found with that id" })
+      : res.status(200).json(thoughtToAddReaction);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+// DELETE a reaction from a thought
+
+const deleteReaction = async (req, res) => {
+  try {
+    const thoughtToDeleteReaction = await Thought.findOneAndUpdate(
+      { _id: req.params.thoughtId },
+      {
+        $pull: {
+          reactions: { _id: req.params.reactionId },
+        },
+      }
+    );
+    !thoughtToDeleteReaction
+      ? res.status(404).json({ message: "No thought found with that id" })
+      : res.status(204).json(thoughtToDeleteReaction);
+
+    console.log(`${req.method} request made`);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 module.exports = {
   getAllThoughts,
   getSingleThought,
   createThought,
   updateThought,
   deleteThought,
+  addReaction,
+  deleteReaction,
 };
