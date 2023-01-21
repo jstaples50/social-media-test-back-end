@@ -1,9 +1,3 @@
-// const users = [];
-// const getNamePart = () => names[Math.floor(Math.random() * names.length)];
-// const getRandomName = () => `${getNamePart()} ${getNamePart()}`;
-
-// module.exports = getRandomName;
-
 const { User } = require("../models");
 
 const users = [

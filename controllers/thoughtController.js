@@ -15,6 +15,8 @@ const getAllThoughts = async (req, res) => {
 
 const getSingleThought = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.thoughtId)) {
       res.status(404).json({ message: "No thought found with that id" });
       return;
@@ -35,14 +37,17 @@ const getSingleThought = async (req, res) => {
 
 const createThought = async (req, res) => {
   try {
+    // Check if the request has an existing user in database
+
     const checkForUser = await User.findOne({ username: req.body.username });
-    console.log(checkForUser);
     if (!checkForUser) {
       res
         .status(400)
         .json({ message: "Thought must be associated with a current user" });
       return;
     }
+    // Create new thought and update the associated user
+
     const newThought = await Thought.create(req.body);
     const associatedUser = await User.findOneAndUpdate(
       { username: newThought.username },
@@ -61,10 +66,13 @@ const createThought = async (req, res) => {
 
 const updateThought = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.thoughtId)) {
       res.status(404).json({ message: "No thought found with that id" });
       return;
     }
+
     const updatedThought = await Thought.findByIdAndUpdate(
       {
         _id: req.params.thoughtId,
@@ -87,6 +95,8 @@ const updateThought = async (req, res) => {
 
 const deleteThought = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.thoughtId)) {
       res.status(404).json({ message: "No thought found with that id" });
       return;
@@ -109,10 +119,14 @@ const deleteThought = async (req, res) => {
 
 const addReaction = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.thoughtId)) {
       res.status(404).json({ message: "No thought found with that id" });
       return;
     }
+    // Find Thought and add reaction to it
+
     const thoughtToAddReaction = await Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $addToSet: { reactions: req.body } },
@@ -130,6 +144,8 @@ const addReaction = async (req, res) => {
 
 const deleteReaction = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (
       !Types.ObjectId.isValid(req.params.thoughtId) ||
       !Types.ObjectId.isValid(req.params.reactionId)
@@ -140,9 +156,13 @@ const deleteReaction = async (req, res) => {
       return;
     }
 
+    // Check that thought exists in database
+
     const thought = await Thought.findOne({
       _id: req.params.thoughtId,
     });
+
+    // Check that found thought has the reaction in request
 
     const reaction = () => {
       for (const reaction of thought.reactions) {
@@ -160,6 +180,8 @@ const deleteReaction = async (req, res) => {
       });
       return;
     }
+
+    // Removes reaction from thought
 
     const thoughtToDeleteReaction = await Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },

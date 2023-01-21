@@ -15,6 +15,8 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res, next) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.userId)) {
       res.status(404).json({ message: "No user found with that id" });
       return;
@@ -49,6 +51,8 @@ const createUser = async (req, res) => {
 
 const addFriendToUser = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (
       !Types.ObjectId.isValid(req.params.userId) ||
       !Types.ObjectId.isValid(req.params.friendId)
@@ -76,6 +80,8 @@ const addFriendToUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.userId)) {
       res.status(404).json({ message: "No user found with that id" });
       return;
@@ -100,6 +106,8 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (!Types.ObjectId.isValid(req.params.userId)) {
       res.status(404).json({ message: "No user found with that id" });
       return;
@@ -116,28 +124,10 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// const deleteFriendFromUserFriendList = async (req, res) => {
-//   try {
-//     const user = await User.findById(req.params.userId);
-//     if (!user) {
-//       res.status(404).json({ message: "No user found with that id" });
-//     } else {
-//       const friendToDelete = user.friends.find(
-//         (friend) => friend === req.params.friendId
-//       );
-//       const indexOfFriendToDelete = user.friends.indexOf(friendToDelete);
-//       user.friends.splice(indexOfFriendToDelete, 1);
-//       user.save();
-//       res.json(user);
-//       console.log(`${req.method} request made`);
-//     }
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// };
-
 const deleteFriendFromUserFriendList = async (req, res) => {
   try {
+    // Check if id parameter is a valid mongoose ObjectId
+
     if (
       !Types.ObjectId.isValid(req.params.userId) ||
       !Types.ObjectId.isValid(req.params.friendId)
