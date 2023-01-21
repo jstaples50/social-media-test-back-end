@@ -4,7 +4,7 @@ const { User } = require("../models");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}).populate("friends");
     res.json(users);
     console.log(`${req.method} request made`);
   } catch (err) {
@@ -12,7 +12,7 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.params.userId }).populate([
       "thoughts",
@@ -25,9 +25,22 @@ const getUserById = async (req, res) => {
       console.log(`${req.method} request made`);
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json(err);
   }
 };
+
+// function getUserById(req, res) {
+//   User.findOne({ _id: req.params.userId })
+//     // .populate(["thoughts", "friends"])
+//     .select("-__v")
+//     .then((user) =>
+//       !user
+//         ? res.status(404).json({ message: "No user found with that id" })
+//         : res.json(user)
+//     )
+//     .catch((err) => res.status(500).json(err));
+// }
 
 // POST functions
 

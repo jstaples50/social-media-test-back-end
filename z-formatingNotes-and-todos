@@ -1,7 +1,7 @@
 TODOS
 
 - DELETE function for User returns no body for error or succesful create
-- formatDate function does not work when hitting api
+- formatDate function does not work when hitting api **_DONE!_**
 - BONUS: Remove a user's associated thoughts when deleted
 - Error handling incorrect on api hits
 
