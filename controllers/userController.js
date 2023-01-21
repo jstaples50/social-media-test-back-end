@@ -35,18 +35,6 @@ const getUserById = async (req, res, next) => {
   }
 };
 
-// function getUserById(req, res) {
-//   User.findOne({ _id: req.params.userId })
-//     // .populate(["thoughts", "friends"])
-//     .select("-__v")
-//     .then((user) =>
-//       !user
-//         ? res.status(404).json({ message: "No user found with that id" })
-//         : res.json(user)
-//     )
-//     .catch((err) => res.status(500).json(err));
-// }
-
 // POST functions
 
 const createUser = async (req, res) => {

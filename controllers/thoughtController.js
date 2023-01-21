@@ -1,4 +1,5 @@
 const { Thought, User } = require("../models");
+const { Types } = require("mongoose");
 
 // GET functions
 
@@ -14,6 +15,10 @@ const getAllThoughts = async (req, res) => {
 
 const getSingleThought = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.thoughtId)) {
+      res.status(404).json({ message: "No thought found with that id" });
+      return;
+    }
     const thought = await Thought.findOne({ _id: req.params.thoughtId });
     if (!thought) {
       res.status(404).json({ message: "No thought found with that id" });
@@ -30,6 +35,14 @@ const getSingleThought = async (req, res) => {
 
 const createThought = async (req, res) => {
   try {
+    const checkForUser = await User.findOne({ username: req.body.username });
+    console.log(checkForUser);
+    if (!checkForUser) {
+      res
+        .status(400)
+        .json({ message: "Thought must be associated with a current user" });
+      return;
+    }
     const newThought = await Thought.create(req.body);
     const associatedUser = await User.findOneAndUpdate(
       { username: newThought.username },
@@ -37,13 +50,8 @@ const createThought = async (req, res) => {
       { new: true }
     );
     console.log(`${req.method} request made`);
-    if (!associatedUser) {
-      res.status(404).json({
-        message: "Thought created but not associated with a user",
-      });
-    } else {
-      res.status(201).json(newThought);
-    }
+
+    res.status(201).json(newThought);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -53,6 +61,10 @@ const createThought = async (req, res) => {
 
 const updateThought = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.thoughtId)) {
+      res.status(404).json({ message: "No thought found with that id" });
+      return;
+    }
     const updatedThought = await Thought.findByIdAndUpdate(
       {
         _id: req.params.thoughtId,
@@ -75,6 +87,10 @@ const updateThought = async (req, res) => {
 
 const deleteThought = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.thoughtId)) {
+      res.status(404).json({ message: "No thought found with that id" });
+      return;
+    }
     const thoughtToDelete = await Thought.findByIdAndDelete(
       req.params.thoughtId
     );
@@ -93,6 +109,10 @@ const deleteThought = async (req, res) => {
 
 const addReaction = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.thoughtId)) {
+      res.status(404).json({ message: "No thought found with that id" });
+      return;
+    }
     const thoughtToAddReaction = await Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       { $addToSet: { reactions: req.body } },
@@ -110,6 +130,37 @@ const addReaction = async (req, res) => {
 
 const deleteReaction = async (req, res) => {
   try {
+    if (
+      !Types.ObjectId.isValid(req.params.thoughtId) ||
+      !Types.ObjectId.isValid(req.params.reactionId)
+    ) {
+      res
+        .status(404)
+        .json({ message: "No thought/reaction found with that id" });
+      return;
+    }
+
+    const thought = await Thought.findOne({
+      _id: req.params.thoughtId,
+    });
+
+    const reaction = () => {
+      for (const reaction of thought.reactions) {
+        if (reaction._id == req.params.reactionId) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    };
+
+    if (!thought || !reaction()) {
+      res.status(404).json({
+        message: "No thought/reaction found with that id",
+      });
+      return;
+    }
+
     const thoughtToDeleteReaction = await Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
       {
@@ -118,9 +169,10 @@ const deleteReaction = async (req, res) => {
         },
       }
     );
-    !thoughtToDeleteReaction
-      ? res.status(404).json({ message: "No thought found with that id" })
-      : res.status(204).json(thoughtToDeleteReaction);
+
+    res.status(202).json({
+      message: "reaction successfully deleted",
+    });
 
     console.log(`${req.method} request made`);
   } catch (err) {
