@@ -5,7 +5,7 @@ const { Types } = require("mongoose");
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).populate("friends");
+    const users = await User.find({});
     res.json(users);
     console.log(`${req.method} request made`);
   } catch (err) {

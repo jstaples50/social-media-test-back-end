@@ -12,7 +12,9 @@ Concepts applied to this project include:
 - Using mongoose to create Schemas for Mongo database
 - Using mongoose to query the database
 
-_Link to Walkthrough video:_ [Walkthrough Video]()
+_Link to Walkthrough video:_ [Walkthrough Video](https://drive.google.com/file/d/1LZsbFWSaOg9TryyRhrRlKTA7BZO349oe/view)
+
+_Link to github repo:_ [social-media-test-back-end](https://github.com/jstaples50/social-media-test-back-end)
 
 ## Table of Contents
 
