@@ -61,6 +61,13 @@ const createUser = async (req, res) => {
 
 const addFriendToUser = async (req, res) => {
   try {
+    if (
+      !Types.ObjectId.isValid(req.params.userId) ||
+      !Types.ObjectId.isValid(req.params.friendId)
+    ) {
+      res.status(404).json({ message: "No user/friend found with that id" });
+      return;
+    }
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
       { $addToSet: { friends: req.params.friendId } },
@@ -81,6 +88,10 @@ const addFriendToUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.userId)) {
+      res.status(404).json({ message: "No user found with that id" });
+      return;
+    }
     const updatedUser = await User.findByIdAndUpdate(
       { _id: req.params.userId },
       { $set: req.body },
@@ -101,6 +112,10 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.userId)) {
+      res.status(404).json({ message: "No user found with that id" });
+      return;
+    }
     const userToDelete = await User.findByIdAndDelete(req.params.userId);
     if (!userToDelete) {
       res.status(404).json({ message: "No user found with that id" });
@@ -135,6 +150,13 @@ const deleteUser = async (req, res) => {
 
 const deleteFriendFromUserFriendList = async (req, res) => {
   try {
+    if (
+      !Types.ObjectId.isValid(req.params.userId) ||
+      !Types.ObjectId.isValid(req.params.friendId)
+    ) {
+      res.status(404).json({ message: "No user/friend found with that id" });
+      return;
+    }
     const user = await User.findOneAndUpdate(
       { _id: req.params.userId },
       {
