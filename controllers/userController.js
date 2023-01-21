@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const { Types } = require("mongoose");
 
 // GET functions
 
@@ -14,6 +15,10 @@ const getAllUsers = async (req, res) => {
 
 const getUserById = async (req, res, next) => {
   try {
+    if (!Types.ObjectId.isValid(req.params.userId)) {
+      res.status(404).json({ message: "No user found with that id" });
+      return;
+    }
     const user = await User.findOne({ _id: req.params.userId }).populate([
       "thoughts",
       "friends",
